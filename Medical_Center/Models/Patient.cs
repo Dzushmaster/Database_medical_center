@@ -15,5 +15,12 @@ namespace Medical_Center.Models
         public string password { get; set; }
         public Roles role { get; set; }
         public DateTime birthday { get; set; }
+        //valid fio ;
+        //valid email;
+        //valid login;
+        //valid password;
+        //valid role
+        //valid birthday
+
     }
 }
