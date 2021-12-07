@@ -7,76 +7,83 @@ maxsize 600m
 extent management local;
 
 
-DROP TABLE USER_;
-CREATE TABLE CREATOR.USER_(
-                    ID_USER NUMBER(5, 0) PRIMARY KEY NOT NULL,
-                    FULLNAME NVARCHAR2(50) NOT NULL,
-                    BIRTH_DATE DATE NOT NULL,
-                    EMAIL NVARCHAR2(100) NOT NULL UNIQUE,
-                    LOGIN VARCHAR2(20) NOT NULL UNIQUE,
-                    PASSWORD VARCHAR2(20) NOT NULL
-                    ) tablespace Med_Center;
 
 DROP TABLE HOME_ANALYSES;
+DROP TABLE WORKDAY;
+DROP TABLE ANALYSES;
+DROP TABLE DESIASE;
+DROP TABLE HEALTH;
+DROP TABLE DOCTOR;
+DROP TABLE USER_;
+
+CREATE TABLE CREATOR.USER_(
+                    ID_USER NUMBER(6, 0) PRIMARY KEY NOT NULL,
+                    FULLNAME NVARCHAR2(50) NOT NULL,--маскируем
+                    BIRTH_DATE DATE NOT NULL,--маскируем
+                    EMAIL NVARCHAR2(100) NOT NULL UNIQUE,--маскируем
+                    LOGIN VARCHAR2(64) NOT NULL UNIQUE,--aes128
+                    PASSWORD VARCHAR2(64) NOT NULL--aes192
+                    ) tablespace Med_Center;
+
+
 CREATE TABLE CREATOR.HOME_ANALYSES(
                             ID_ANALYSES NUMBER (10, 0) PRIMARY KEY NOT NULL,
-                            ID_USER NUMBER(5,0) NOT NULL,
-                            PULSE NUMBER (3, 0) NULL,
-                            TEMPERATURE NUMBER(4,2) NULL,
-                            BLOOD_PRESS VARCHAR2(7) NULL,
-                            DATE_ANALYSE DATE,
+                            ID_USER NUMBER(6,0) NOT NULL,
+                            PULSE NUMBER (3, 0) NULL, --encrypt_des
+                            TEMPERATURE NUMBER(4,2) NULL,--encrypt_des
+                            BLOOD_PRESS VARCHAR2(32) NULL,--aes_192
+                            DATE_ANALYSE DATE,--маскируем
                             CONSTRAINT FK_ID_USER FOREIGN KEY (ID_USER) REFERENCES USER_(ID_USER) 
                             ) tablespace Med_Center;
 
-DROP TABLE DOCTOR;
+
 CREATE TABLE CREATOR.DOCTOR(
-                    ID_DOCTOR NUMBER(5, 0) PRIMARY KEY NOT NULL,
-                    FULL_NAME NVARCHAR2(50) NOT NULL,
+                    ID_DOCTOR NUMBER(6, 0) PRIMARY KEY NOT NULL,
+                    FULL_NAME NVARCHAR2(50) NOT NULL, -- маскируем
                     SPECIALITY NVARCHAR2(45) NOT NULL,
-                    EMAIL NVARCHAR2(100) NULL UNIQUE,
-                    LOGIN VARCHAR2(20) NOT NULL UNIQUE,
-                    PASSWORD VARCHAR2(20) NOT NULL
+                    EMAIL NVARCHAR2(100) NULL UNIQUE, -- маскируем
+                    LOGIN VARCHAR2(64) NOT NULL UNIQUE, -- aes_128
+                    PASSWORD VARCHAR2(64) NOT NULL --aes_128
                     ) tablespace Med_Center;
 
-DROP TABLE WORKDAY;
+
 CREATE TABLE CREATOR.WORKDAY(
                      ID_WORKDAY NUMBER (10, 0) PRIMARY KEY NOT NULL,
-                     ID_DOCTOR NUMBER(5,0) NOT NULL,
+                     ID_DOCTOR NUMBER(6,0) NOT NULL,
                      CABINET NUMBER(4,0) NOT NULL,
                      BEGINING TIMESTAMP(0),
                      ENDING TIMESTAMP(0),
                      CONSTRAINT PK_WORKDAY FOREIGN KEY (ID_DOCTOR) REFERENCES DOCTOR(ID_DOCTOR)
                     ) TABLESPACE MED_CENTER;
                     
-DROP TABLE HEALTH;
+
 CREATE TABLE CREATOR.HEALTH(
                      ID_VISITE NUMBER (15, 0) PRIMARY KEY NOT NULL,
-                     ID_PREV_VISITE NUMBER (15, 0) NULL,
-                     ID_USER NUMBER(5,0) NOT NULL,
-                     ID_DOCTOR NUMBER(5,0) NOT NULL,
-                     DATE_TIME_VISITE TIMESTAMP NOT NULL,
+                     ID_USER NUMBER(6,0) NOT NULL,
+                     ID_DOCTOR NUMBER(6,0) NOT NULL,
+                     DATE_TIME_VISITE TIMESTAMP NOT NULL, --маскируем
                      CONSTRAINT FK_DOCTOR FOREIGN KEY (ID_DOCTOR) REFERENCES DOCTOR(ID_DOCTOR),
                      CONSTRAINT FK_USER FOREIGN KEY (ID_USER) REFERENCES USER_(ID_USER)
                      ) TABLESPACE MED_CENTER;
 
-DROP TABLE ANALYSES;
+
 CREATE TABLE CREATOR.ANALYSES(
                      ID_ANALYSE NUMBER(15, 0) PRIMARY KEY NOT NULL,
                      ID_VISITE NUMBER (15, 0) NOT NULL,
                      LABARATORY VARCHAR2(4) NOT NULL,
-                     NAME_ANALYSE NVARCHAR2(50) NOT NULL,
-                     RESULT_ANALYSE NVARCHAR2(100) NULL,
-                     DATE_TIME_ANALYSE TIMESTAMP NOT NULL,
+                     NAME_ANALYSE NVARCHAR2(50) NOT NULL, --маскировка
+                     RESULT_ANALYSE NVARCHAR2(100) NULL, --маскировка
+                     DATE_TIME_ANALYSE TIMESTAMP NOT NULL, --маскируем
                      CONSTRAINT FK_VISITE FOREIGN KEY (ID_VISITE) REFERENCES HEALTH(ID_VISITE)
                      ) TABLESPACE MED_CENTER;
 
-DROP TABLE DESIASE;
+
 CREATE TABLE CREATOR.DESIASE(
                         ID_DESIASE NUMBER(15, 0) PRIMARY KEY NOT NULL,
                         ID_VISITE NUMBER(15, 0) NOT NULL,
-                        SYMPTOMES NVARCHAR2(200),
-                        THERAPY NVARCHAR2(200),
-                        RESULT_DESIASE NVARCHAR2(200),
+                        SYMPTOMES NVARCHAR2(200), --маскировка
+                        THERAPY NVARCHAR2(200), --маскировка
+                        RESULT_DESIASE NVARCHAR2(200), --маскировка
                         CONSTRAINT FK_VISIT FOREIGN KEY (ID_VISITE) REFERENCES HEALTH(ID_VISITE)
                         ) TABLESPACE MED_CENTER;
 
