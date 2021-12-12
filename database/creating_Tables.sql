@@ -31,13 +31,12 @@ CREATE TABLE CREATOR.USER_(
 CREATE TABLE CREATOR.HOME_ANALYSES(
                             ID_ANALYSES NUMBER (10, 0) PRIMARY KEY NOT NULL,
                             ID_USER NUMBER(6,0) NOT NULL,
-                            PULSE NUMBER (3, 0) NULL, --encrypt_des
-                            TEMPERATURE NUMBER(4,2) NULL,--encrypt_des
+                            PULSE VARCHAR2 (32) NULL, --encrypt_des
+                            TEMPERATURE VARCHAR2(32) NULL,--encrypt_des
                             BLOOD_PRESS VARCHAR2(32) NULL,--aes_192
                             DATE_ANALYSE DATE,--маскируем
                             CONSTRAINT FK_ID_USER FOREIGN KEY (ID_USER) REFERENCES USER_(ID_USER) 
                             ) tablespace Med_Center;
-
 
 CREATE TABLE CREATOR.DOCTOR(
                     ID_DOCTOR NUMBER(6, 0) PRIMARY KEY NOT NULL,
