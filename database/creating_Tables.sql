@@ -34,7 +34,7 @@ CREATE TABLE CREATOR.HOME_ANALYSES(
                             PULSE VARCHAR2 (32) NULL, --encrypt_des
                             TEMPERATURE VARCHAR2(32) NULL,--encrypt_des
                             BLOOD_PRESS VARCHAR2(32) NULL,--aes_192
-                            DATE_ANALYSE DATE,--маскируем
+                            DATE_ANALYSE TIMESTAMP,--маскируем
                             CONSTRAINT FK_ID_USER FOREIGN KEY (ID_USER) REFERENCES USER_(ID_USER) 
                             ) tablespace Med_Center;
 
