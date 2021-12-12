@@ -141,10 +141,14 @@ CREATE OR REPLACE FUNCTION CREATOR.CRYPTO_VALUE_128 (BEFORE_ IN VARCHAR2) RETURN
 IS
  L_ENC_VAL RAW(200);
  L_KEY VARCHAR2(128):='QHOXvJyLaNTIOdHr';
+ L_MOD NUMBER := DBMS_CRYPTO.encrypt_aes128
+              + DBMS_CRYPTO.chain_cbc
+              + DBMS_CRYPTO.pad_pkcs5;
 BEGIN
-    L_ENC_VAL := DBMS_CRYPTO.encrypt(src => utl_i18n.string_to_raw(BEFORE_, 'AL32UTF8'),
-                                    key => utl_i18n.string_to_raw(L_KEY, 'AL32UTF8'),
-                                    typ => DBMS_CRYPTO.encrypt_aes128 + DBMS_CRYPTO.chain_cbc + DBMS_CRYPTO.pad_pkcs5);
+    L_ENC_VAL := DBMS_CRYPTO.encrypt(utl_i18n.string_to_raw(BEFORE_, 'AL32UTF8'),
+                                    L_MOD,
+                                    utl_i18n.string_to_raw(L_KEY, 'AL32UTF8')
+                                    );
     RETURN L_ENC_VAL;
 END;
 
@@ -153,13 +157,15 @@ CREATE OR REPLACE FUNCTION CREATOR.DECRYPTOR_VALUE_128 (BEFORE_ IN VARCHAR2) RET
 IS
     L_KEY VARCHAR2(128):='QHOXvJyLaNTIOdHr';
     L_DEC RAW(200);
-    L_MOD NUMBER := DBMS_CRYPTO.encrypt_aes128 + DBMS_CRYPTO.chain_cbc + DBMS_CRYPTO.pad_pkcs5;
+    L_MOD NUMBER := DBMS_CRYPTO.encrypt_aes128
+    + DBMS_CRYPTO.chain_cbc
+    + DBMS_CRYPTO.pad_pkcs5;
 BEGIN
     L_DEC := DBMS_CRYPTO.decrypt(BEFORE_,
                                 L_MOD,
                                 utl_i18n.string_to_raw(L_KEY, 'AL32UTF8')
                                 );
-    RETURN L_DEC;
+    RETURN utl_i18n.raw_to_char(L_DEC);
 END;
 
 DROP FUNCTION CREATOR.CRYPTO_VALUE_192;
