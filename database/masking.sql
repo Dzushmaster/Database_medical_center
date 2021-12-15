@@ -88,6 +88,61 @@ DBMS_REDACT.ALTER_POLICY(
 );
 END;
 -------------------ANALYSE MASKING ---------------------------------
+-------------------DESIASE MASKING ---------------------------------
+
+begin
+DBMS_REDACT.DROP_POLICY(
+    object_schema =>'CREATOR',
+    object_name => 'DESIASE',
+    policy_name => 'redact_desiases'
+);
+end;
+
+BEGIN
+DBMS_REDACT.ADD_POLICY(
+    object_schema => 'CREATOR',
+    object_name => 'DESIASE',
+    column_name => 'SYMPTOMES',
+    policy_name => 'redact_desiases',
+    function_type => dbms_redact.partial, 
+    function_parameters => 'VV,VV,@,2,2',
+    regexp_position => DBMS_REDACT.RE_BEGINNING,
+    regexp_occurrence => DBMS_REDACT.RE_FIRST,
+    expression            => 'SYS_CONTEXT(''SYS_SESSION_ROLES'',''DESIASE'') = ''FALSE'''
+);
+END;
+
+BEGIN
+DBMS_REDACT.ALTER_POLICY(
+    object_schema => 'CREATOR',
+    object_name => 'DESIASE',
+    column_name => 'THERAPY',
+    policy_name => 'redact_desiases',
+    function_type => dbms_redact.partial, 
+    function_parameters => 'VV,VV,@,2,2',
+    regexp_position => DBMS_REDACT.RE_BEGINNING,
+    regexp_occurrence => DBMS_REDACT.RE_FIRST,
+    expression            => 'SYS_CONTEXT(''SYS_SESSION_ROLES'',''DESIASE'') = ''FALSE''',
+    action                => DBMS_REDACT.ADD_COLUMN
+);
+END;
+
+BEGIN
+DBMS_REDACT.ALTER_POLICY(
+    object_schema => 'CREATOR',
+    object_name => 'DESIASE',
+    column_name => 'RESULT_DESIASE',
+    policy_name => 'redact_desiases',
+    function_type => dbms_redact.partial, 
+    function_parameters => 'VV,VV,@,2,2',
+    regexp_position => DBMS_REDACT.RE_BEGINNING,
+    regexp_occurrence => DBMS_REDACT.RE_FIRST,
+    expression            => 'SYS_CONTEXT(''SYS_SESSION_ROLES'',''DESIASE'') = ''FALSE''',
+    action                => DBMS_REDACT.ADD_COLUMN
+);
+END;
+
+-------------------DESIASE MASKING ---------------------------------
 -------------------DOCTORS MASKING ---------------------------------
 
 begin
