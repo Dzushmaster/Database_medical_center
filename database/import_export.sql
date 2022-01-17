@@ -5,7 +5,7 @@ IS
 DOC DBMS_XMLDOM.DOMDocument;
 XDATA XMLTYPE;
 CURSOR XMLCUR IS
-SELECT XMLELEMENT("DOCTOR",
+SELECT XMLELEMENT("DOCTORS",
 XMLAttributes('http://www.w3.org/2001/XMLSchema' AS "xmlns:xsi",
 'http://www.oracle.com/Users.xsd' AS "xsi:nonamespaceSchemaLocation"),
 XMLAGG(XMLELEMENT("DOCTOR",
@@ -34,6 +34,7 @@ END;
 
 CREATE OR REPLACE PROCEDURE IMPORT_DOCTOR_XML
 IS
+RESULT_ NUMBER;
 L_CLOB CLOB;
 L_BFILE BFILE:= BFILENAME('UTLDATA', 'import.xml');
 L_DEST_OFFSET INTEGER := 1;
@@ -85,3 +86,6 @@ END;
 BEGIN
 IMPORT_DOCTOR_XML();
 END;
+
+-----------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------
